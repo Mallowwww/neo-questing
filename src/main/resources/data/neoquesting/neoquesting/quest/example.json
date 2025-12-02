@@ -1,0 +1,16 @@
+{
+  "quests": [
+    {
+      "id": "neoquesting:first",
+      "dependencies": [],
+      "requirements": ["minecraft:dirt"],
+      "reward": ["minecraft:diamond"]
+    },
+    {
+      "id": "neoquesting:second",
+      "dependencies": ["neoquesting:first"],
+      "requirements": ["minecraft:sand"],
+      "reward": ["minecraft:gold_ingot"]
+    }
+  ]
+}

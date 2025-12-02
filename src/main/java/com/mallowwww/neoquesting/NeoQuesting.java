@@ -1,5 +1,7 @@
 package com.mallowwww.neoquesting;
 
+import com.mallowwww.neoquesting.item.QuestBook;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -25,6 +27,10 @@ public class NeoQuesting {
     public NeoQuesting(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
+
+        QuestBook.QuestDataComponent.register(modEventBus);
+        ModItems.register(modEventBus);
+
         NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -45,4 +51,7 @@ public class NeoQuesting {
     public void onServerStarting(ServerStartingEvent event) {
 
     }
+
+
+    public static ResourceLocation path(String id) {return ResourceLocation.fromNamespaceAndPath(NeoQuesting.MODID, id);}
 }
