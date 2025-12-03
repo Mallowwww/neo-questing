@@ -2,9 +2,11 @@ package com.mallowwww.neoquesting.item;
 
 import com.mallowwww.neoquesting.ModRegistries;
 import com.mallowwww.neoquesting.NeoQuesting;
+import com.mallowwww.neoquesting.screen.QuestScreen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -34,6 +36,7 @@ public class QuestBook extends Item {
         InteractionResultHolder<ItemStack> interaction = InteractionResultHolder.pass(player.getItemInHand(usedHand));
         var stack = player.getItemInHand(usedHand);
         var component = stack.get(QuestDataComponent.SUPPLIER);
+        var instance = Minecraft.getInstance();
         if (component == null)
             return super.use(level, player, usedHand);
         var questID = component.id;
@@ -43,8 +46,9 @@ public class QuestBook extends Item {
         var modQuests = questsRegistry.get(questID);
         if (modQuests == null)
             return super.use(level, player, usedHand);
-
-        player.sendSystemMessage(Component.literal("AAAA " + modQuests.quests().getFirst().id().toString()));
+        if (level.isClientSide())
+            instance.setScreen(new QuestScreen(modQuests));
+//        player.sendSystemMessage(Component.literal("AAAA " + modQuests.quests().getFirst().id().toString()));
 
         return super.use(level, player, usedHand);
     }

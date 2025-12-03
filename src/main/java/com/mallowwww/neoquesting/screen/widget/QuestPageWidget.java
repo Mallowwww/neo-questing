@@ -1,0 +1,45 @@
+package com.mallowwww.neoquesting.screen.widget;
+
+import com.mallowwww.neoquesting.ModRegistries;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class QuestPageWidget extends AbstractContainerWidget {
+    private final List<QuestWidget> CHILDREN = new ArrayList<>();
+    private final ModRegistries.ModQuests QUESTS;
+    public QuestPageWidget(int x, int y, int width, int height, Component message, ModRegistries.ModQuests _quests) {
+        super(x, y, width, height, message);
+        QUESTS = _quests;
+        int i = 0;
+        for (var quest : _quests.quests()) {
+            CHILDREN.add(new QuestWidget(x, y, 32, 32, i++ * 64, 0, Component.literal("a"), quest));
+        }
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.blit(ResourceLocation.parse("minecraft:textures/block/dirt.png"), 0, 0, 0, -getX(), -getY(), width, height, 32, 32);
+        for (var x: CHILDREN) {
+            x.setPosition(getX() + x.offsetX, getY() + x.offsetY);
+            x.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+
+    }
+
+    @Override
+    public List<? extends GuiEventListener> children() {
+        return CHILDREN;
+    }
+}
