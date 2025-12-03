@@ -30,6 +30,7 @@ public class NeoQuesting {
 
         QuestBook.QuestDataComponent.register(modEventBus);
         ModItems.register(modEventBus);
+        ModAttachments.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);

@@ -10,16 +10,24 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
+import org.joml.Vector2f;
 
 import java.util.List;
 @EventBusSubscriber(modid = NeoQuesting.MODID)
 public class ModRegistries {
-    public record Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ResourceLocation> requirements, List<ResourceLocation> reward) {
+    public record Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ResourceLocation> requirements, List<ResourceLocation> reward, int x, int y) {
+        public Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ResourceLocation> requirements, List<ResourceLocation> reward, List<Integer> pos) {
+            this(id, dependencies, requirements, reward, pos.getFirst(), pos.getLast());
+        }
+        public List<Integer> pos() {
+            return List.of(x, y);
+        }
         public static final Codec<Quest> CODEC = RecordCodecBuilder.create((RecordCodecBuilder.Instance<Quest> i) -> i.group(
                 ResourceLocation.CODEC.fieldOf("id").forGetter(Quest::id),
                 ResourceLocation.CODEC.listOf().fieldOf("dependencies").forGetter(Quest::dependencies),
                 ResourceLocation.CODEC.listOf().fieldOf("requirements").forGetter(Quest::requirements),
-                ResourceLocation.CODEC.listOf().fieldOf("reward").forGetter(Quest::reward)
+                ResourceLocation.CODEC.listOf().fieldOf("reward").forGetter(Quest::reward),
+                Codec.INT.sizeLimitedListOf(2).fieldOf("position").forGetter(Quest::pos)
         ).apply(i, Quest::new));
     }
     public record ModQuests(List<Quest> quests) {

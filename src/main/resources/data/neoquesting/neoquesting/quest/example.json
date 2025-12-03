@@ -4,13 +4,15 @@
       "id": "neoquesting:first",
       "dependencies": [],
       "requirements": ["minecraft:dirt"],
-      "reward": ["minecraft:diamond"]
+      "reward": ["minecraft:diamond"],
+      "position": [32, 32]
     },
     {
       "id": "neoquesting:second",
       "dependencies": ["neoquesting:first"],
       "requirements": ["minecraft:sand"],
-      "reward": ["minecraft:gold_ingot"]
+      "reward": ["minecraft:gold_ingot"],
+      "position": [64, 64]
     }
   ]
 }

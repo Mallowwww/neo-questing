@@ -1,5 +1,6 @@
 package com.mallowwww.neoquesting.item;
 
+import com.mallowwww.neoquesting.ModAttachments;
 import com.mallowwww.neoquesting.ModRegistries;
 import com.mallowwww.neoquesting.NeoQuesting;
 import com.mallowwww.neoquesting.screen.QuestScreen;
@@ -47,7 +48,7 @@ public class QuestBook extends Item {
         if (modQuests == null)
             return super.use(level, player, usedHand);
         if (level.isClientSide())
-            instance.setScreen(new QuestScreen(modQuests));
+            instance.setScreen(new QuestScreen(modQuests, player));
 //        player.sendSystemMessage(Component.literal("AAAA " + modQuests.quests().getFirst().id().toString()));
 
         return super.use(level, player, usedHand);
