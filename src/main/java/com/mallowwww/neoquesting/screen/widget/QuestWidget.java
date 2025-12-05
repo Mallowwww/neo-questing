@@ -6,6 +6,7 @@ import com.mallowwww.neoquesting.network.QuestNetworking;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -22,10 +23,15 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.commons.io.output.QueueOutputStream;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuestWidget extends AbstractWidget {
@@ -102,9 +108,42 @@ public class QuestWidget extends AbstractWidget {
             guiGraphics.pose().scale(2, 2, 2);
             guiGraphics.pose().translate(0, 0, 200);
             guiGraphics.drawString(Minecraft.getInstance().font, String.valueOf(stack.getCount()), (int)((float)x/2+20/2), (int)((float)y/2+20/2), 0xFFFFFFFF);
+            guiGraphics.pose().translate(0, 0, 100);
             guiGraphics.pose().popPose();
-            if (inBounds(mouseX, mouseY))
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 300);
+            if (inBounds(mouseX, mouseY)) {
+//                guiGraphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
+                var id = QUEST.id();
+                Map<ResourceLocation, ModAttachments.QuestState> data = PLAYER.getData(ModAttachments.QUEST_ATTACHMENT_TYPE).map();
+                List<Component> stackComponents = stack.getTooltipLines(Item.TooltipContext.of(minecraft.level), null, TooltipFlag.NORMAL);
+                Component questTitle = Component.translatable("quest."+id.getNamespace()+"."+id.getPath())
+                        .withStyle(ChatFormatting.BOLD)
+                        .withStyle(ChatFormatting.AQUA);
+                List<Component> finalComponents = new ArrayList<>();
+                finalComponents.add(questTitle);
+                if (!QUEST.dependencies().isEmpty() || !QUEST.requirements().isEmpty()) {
+                    finalComponents.add(Component.empty());
+                    finalComponents.add(Component.translatable("quest_info.neoquesting.dependencies"));
+                }
+                for (var d : QUEST.dependencies()) {
+                    Component depTitle = Component.translatable("quest."+d.getNamespace()+"."+d.getPath())
+                            .withStyle(
+                                    (!data.containsKey(d) || data.get(d) == ModAttachments.QuestState.INCOMPLETE) ? ChatFormatting.RED : ChatFormatting.GREEN
+                            );
+                    finalComponents.add(
+                            Component.literal("Quest: ").append(depTitle)
+                    );
+                }
+                for (var d : QUEST.requirements()) {
+                    Component depTitle = d.getDisplayName().copy();
+                    finalComponents.add(
+                            Component.literal("Item: "+d.getCount()+"x ").append(depTitle)
+                    );
+                }
+                guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, finalComponents, mouseX, mouseY);
+            }
+            guiGraphics.pose().popPose();
         }
 
     }

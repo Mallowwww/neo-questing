@@ -29,7 +29,8 @@ public class QuestPageWidget extends AbstractContainerWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blit(ResourceLocation.parse("minecraft:textures/block/dirt.png"), 0, 0, 0, -getX(), -getY(), width, height, 32, 32);
+        guiGraphics.blit(ResourceLocation.parse("neoquesting:textures/gui/quest_book_background.png"), 0, 0, 0, -getX(), -getY(), width, height, 32, 32);
+
         for (var x: CHILDREN) {
             x.setPosition(getX() + x.offsetX, getY() + x.offsetY);
             x.render(guiGraphics, mouseX, mouseY, partialTick);

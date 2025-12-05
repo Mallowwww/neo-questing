@@ -10,5 +10,8 @@
   "examplemod.configuration.logDirtBlock": "Log Dirt Block",
   "examplemod.configuration.magicNumberIntroduction": "Magic Number Text",
   "examplemod.configuration.magicNumber": "Magic Number",
-  "gui.neoquesting.examplebutton": "Womp"
+  "gui.neoquesting.examplebutton": "Womp",
+  "quest_info.neoquesting.dependencies": "Needs:",
+  "quest.neoquesting.first": "First Quest",
+  "quest.neoquesting.second": "Second Quest"
 }
