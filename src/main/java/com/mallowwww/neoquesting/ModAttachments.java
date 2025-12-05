@@ -39,7 +39,8 @@ public class ModAttachments {
         }
         public static QuestAttachment decode(ByteBuf buf) {
             Map<ResourceLocation, QuestState> map = new HashMap<>();
-            for (int i = 0; i < buf.readableBytes();) {
+            var bytes = buf.readableBytes();
+            for (int i = 0; i < bytes;) {
                 byte size = buf.readByte();
                 String idString = buf.readCharSequence(size, StandardCharsets.UTF_8).toString();
                 QuestState state = QuestState.values()[buf.readByte()];

@@ -3,15 +3,28 @@
     {
       "id": "neoquesting:first",
       "dependencies": [],
-      "requirements": ["minecraft:dirt"],
-      "reward": ["minecraft:diamond"],
+      "requirements": [{
+        "id": "minecraft:dirt"
+      }],
+      "reward": [{
+        "id": "minecraft:diamond"
+      }],
       "position": [32, 32]
     },
     {
       "id": "neoquesting:second",
       "dependencies": ["neoquesting:first"],
-      "requirements": ["minecraft:sand"],
-      "reward": ["minecraft:gold_ingot"],
+      "requirements": [{
+        "id": "minecraft:sand",
+        "count": 5
+      },{
+        "id": "minecraft:grass_block",
+        "count": 5
+      }],
+      "reward": [{
+        "id": "minecraft:gold_ingot",
+        "count": 2
+      }],
       "position": [64, 64]
     }
   ]
