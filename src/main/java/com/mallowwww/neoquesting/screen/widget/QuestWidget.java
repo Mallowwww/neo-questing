@@ -112,16 +112,43 @@ public class QuestWidget extends AbstractWidget {
             guiGraphics.pose().popPose();
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 300);
+            var questsRegistry = minecraft.player.registryAccess().registry(ModRegistries.MOD_QUESTS_RESOURCE_KEY).get();
+            Map<ResourceLocation, ModAttachments.QuestState> data = PLAYER.getData(ModAttachments.QUEST_ATTACHMENT_TYPE).map();
+            guiGraphics.pose().translate(0, 0, -200);
+            QUEST.dependencies().forEach(dep -> {
+                var quests = questsRegistry.stream().filter(modQuests -> modQuests.quests().stream().anyMatch(q -> q.id().equals(dep))).findFirst().get();
+                var depQuest = quests.quests().stream().filter(q -> q.id().equals(dep)).findFirst().get();
+                var depX = depQuest.x() + x - offsetX;
+                var depY = depQuest.y() + y - offsetY;
+                var first = Math.min(x, depX)+14;
+                var last = Math.max(x, depX)+14;
+                var firstY = Math.min(y, depY)+14;
+                var lastY = Math.max(y, depY)+14;
+                var dist = last - first;
+                var distY = lastY - firstY;
+                var color = (!data.containsKey(dep) || data.get(dep) == ModAttachments.QuestState.INCOMPLETE) ? 0xFFFF0000 : 0xFF00FF00;
+                var offset = 4;
+                if (dist < distY) {
+                    guiGraphics.fill(first, firstY, first + offset, firstY + offset + distY / 2, color);
+                    guiGraphics.fill(first, firstY + distY / 2, last + offset, lastY + offset - distY / 2, color);
+                    guiGraphics.fill(last, lastY, last + offset, lastY + offset - distY / 2, color);
+                } else {
+                    guiGraphics.fill(first, firstY, first + dist / 2 + offset, firstY + offset, color);
+                    guiGraphics.fill(first + dist / 2, firstY, last - dist / 2 + offset, lastY + offset, color);
+                    guiGraphics.fill(last, lastY, last - dist / 2 + offset, lastY + offset, color);
+                }
+            });
+            guiGraphics.pose().translate(0, 0, 200);
             if (inBounds(mouseX, mouseY)) {
 //                guiGraphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
                 var id = QUEST.id();
-                Map<ResourceLocation, ModAttachments.QuestState> data = PLAYER.getData(ModAttachments.QUEST_ATTACHMENT_TYPE).map();
                 List<Component> stackComponents = stack.getTooltipLines(Item.TooltipContext.of(minecraft.level), null, TooltipFlag.NORMAL);
                 Component questTitle = Component.translatable("quest."+id.getNamespace()+"."+id.getPath())
                         .withStyle(ChatFormatting.BOLD)
                         .withStyle(ChatFormatting.AQUA);
                 List<Component> finalComponents = new ArrayList<>();
                 finalComponents.add(questTitle);
+                QUEST.description().ifPresent(s -> finalComponents.add(Component.literal(s).withStyle(ChatFormatting.ITALIC)));
                 if (!QUEST.dependencies().isEmpty() || !QUEST.requirements().isEmpty()) {
                     finalComponents.add(Component.empty());
                     finalComponents.add(Component.translatable("quest_info.neoquesting.dependencies"));
@@ -144,8 +171,14 @@ public class QuestWidget extends AbstractWidget {
                 guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, finalComponents, mouseX, mouseY);
             }
             guiGraphics.pose().popPose();
+
         }
 
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        return false;
     }
 
     @Override

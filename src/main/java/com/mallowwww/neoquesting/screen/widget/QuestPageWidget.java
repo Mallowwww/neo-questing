@@ -23,7 +23,7 @@ public class QuestPageWidget extends AbstractContainerWidget {
         QUESTS = _quests;
         for (var quest : _quests.quests()) {
             ModAttachments.QuestState state = playerData.map().getOrDefault(quest.id(), ModAttachments.QuestState.INCOMPLETE);
-            CHILDREN.add(new QuestWidget(x, y, 32, 32, quest.x(), quest.y(), Component.literal("a"), quest, state, player));
+            CHILDREN.add(new QuestWidget(x, y, 32, 32, quest.x() * 32, quest.y() * 32, Component.literal("a"), quest, state, player));
         }
     }
 
@@ -35,6 +35,11 @@ public class QuestPageWidget extends AbstractContainerWidget {
             x.setPosition(getX() + x.offsetX, getY() + x.offsetY);
             x.render(guiGraphics, mouseX, mouseY, partialTick);
         }
+    }
+
+    @Override
+    public boolean mouseDragged(double p_313749_, double p_313887_, int p_313839_, double p_313844_, double p_313686_) {
+        return true;
     }
 
     @Override

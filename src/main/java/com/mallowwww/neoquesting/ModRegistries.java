@@ -18,11 +18,13 @@ import org.joml.Vector2f;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
 @EventBusSubscriber(modid = NeoQuesting.MODID)
 public class ModRegistries {
-    public record Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ItemStack> requirements, List<ItemStack> reward, int x, int y) {
-        public Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ItemStack> requirements, List<ItemStack> reward, List<Integer> pos) {
-            this(id, dependencies, requirements, reward, pos.getFirst(), pos.getLast());
+    public record Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ItemStack> requirements, List<ItemStack> reward, int x, int y, Optional<String> description) {
+        public Quest(ResourceLocation id, List<ResourceLocation> dependencies, List<ItemStack> requirements, List<ItemStack> reward, List<Integer> pos, Optional<String> description) {
+            this(id, dependencies, requirements, reward, pos.getFirst(), pos.getLast(), description);
         }
         public List<Integer> pos() {
             return List.of(x, y);
@@ -32,7 +34,8 @@ public class ModRegistries {
                 ResourceLocation.CODEC.listOf().fieldOf("dependencies").forGetter(Quest::dependencies),
                 ItemStack.CODEC.listOf().fieldOf("requirements").forGetter(Quest::requirements),
                 ItemStack.CODEC.listOf().fieldOf("reward").forGetter(Quest::reward),
-                Codec.INT.sizeLimitedListOf(2).fieldOf("position").forGetter(Quest::pos)
+                Codec.INT.sizeLimitedListOf(2).fieldOf("position").forGetter(Quest::pos),
+                Codec.STRING.optionalFieldOf("description").forGetter(Quest::description)
         ).apply(i, Quest::new));
     }
     public record ModQuests(List<Quest> quests) {

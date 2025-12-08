@@ -9,7 +9,8 @@
       "reward": [{
         "id": "minecraft:diamond"
       }],
-      "position": [32, 32]
+      "position": [0, 0],
+      "description": "This is a description! It is optional!"
     },
     {
       "id": "neoquesting:second",
@@ -25,7 +26,23 @@
         "id": "minecraft:gold_ingot",
         "count": 2
       }],
-      "position": [64, 64]
+      "position": [1, 2]
+    },
+    {
+      "id": "neoquesting:third",
+      "dependencies": ["neoquesting:first"],
+      "requirements": [{
+        "id": "minecraft:sand",
+        "count": 5
+      },{
+        "id": "minecraft:grass_block",
+        "count": 5
+      }],
+      "reward": [{
+        "id": "minecraft:gold_ingot",
+        "count": 2
+      }],
+      "position": [3, 1]
     }
   ]
 }

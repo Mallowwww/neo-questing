@@ -5,6 +5,7 @@ import com.daqem.uilib.client.gui.background.Backgrounds;
 import com.mallowwww.neoquesting.ModAttachments;
 import com.mallowwww.neoquesting.ModRegistries;
 import com.mallowwww.neoquesting.screen.widget.QuestPageWidget;
+import com.mallowwww.neoquesting.screen.widget.QuestWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +15,7 @@ public class QuestScreen extends AbstractScreen {
     private final Player PLAYER;
     private double X = 0;
     private double Y = 0;
+    private boolean fail_dragging = false;
     private final ModRegistries.ModQuests QUESTS;
     public QuestScreen(ModRegistries.ModQuests _quests, Player _player) {
         super(Component.literal("Quests"));
@@ -36,6 +38,11 @@ public class QuestScreen extends AbstractScreen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (button == 1)
             return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+
+        if (QUESTS_WIDGET.children().stream().anyMatch(c -> c.isMouseOver(mouseX, mouseY) || fail_dragging)) {
+            fail_dragging = true;
+            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
         X+=dragX;
         Y+=dragY;
         QUESTS_WIDGET.setPosition((int) X, (int) Y);
@@ -44,6 +51,7 @@ public class QuestScreen extends AbstractScreen {
 
     @Override
     public void onTickScreen(GuiGraphics guiGraphics, int i, int i1, float v) {
-
+        if (!isDragging())
+            fail_dragging = false;
     }
 }
